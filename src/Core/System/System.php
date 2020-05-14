@@ -34,6 +34,7 @@ class System extends Bundle
         $loader->load('configuration.xml');
         $loader->load('number_range.xml');
         $loader->load('tag.xml');
+        $loader->load('check.xml');
 
         $container->addCompilerPass(new SalesChannelEntityCompilerPass());
     }
