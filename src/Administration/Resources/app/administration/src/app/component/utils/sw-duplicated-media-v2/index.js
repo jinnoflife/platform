@@ -233,10 +233,10 @@ Component.register('sw-duplicated-media-v2', {
 
             this.failedUploadTasks.splice(0, 1);
 
-            if (!this.currentTask) {
-                this.isLoading = false;
-            } else {
+            if (this.shouldSaveSelection) {
                 this.solveDuplicate();
+            } else {
+                this.isLoading = false;
             }
         },
 
