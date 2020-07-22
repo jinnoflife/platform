@@ -26,6 +26,7 @@ To get the diff between two versions, go to https://github.com/shopware/platform
 
 * Administration
     * Added `resetOption` prop on `sw-entity-single-select` component, to provide a value for resetting the selection
+    * Added possibility to add `supportText` inside your theme fields
 
 * Core
     * Added `Czech koruna` as currency
