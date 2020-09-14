@@ -24,6 +24,11 @@ use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter
 
 abstract class Bundle extends SymfonyBundle
 {
+    public const DEFAULT_PATH_VIEWS = 'Resources/views';
+    public const DEFAULT_PATH_SNIPPET = 'Resources/snippets';
+    public const DEFAULT_PATH_ADMINISTRATION = 'Resources/app/administration';
+    public const DEFAULT_PATH_STOREFRONT = 'Resources/app/storefront';
+
     public function build(ContainerBuilder $container): void
     {
         parent::build($container);
@@ -100,20 +105,27 @@ abstract class Bundle extends SymfonyBundle
         }
     }
 
-    /**
-     * @feature-deprecated tag:v6.4.0 - Implement `getActionEventClasses` instead
-     */
-    protected function getActionEvents(): array
+    public function getViewPaths(): array
     {
-        return [];
+        return [self::DEFAULT_PATH_VIEWS];
     }
 
-    /**
-     * Returns a list of all action event class references of this bundle. The events will be registered inside the `\Shopware\Core\Framework\Event\BusinessEventRegistry`.
-     *
-     * @return string[]
-     */
-    protected function getActionEventClasses(): array
+    public function getSnippetPath(): string
+    {
+        return self::DEFAULT_PATH_SNIPPET;
+    }
+
+    public function getAdministrationPath(): string
+    {
+        return self::DEFAULT_PATH_ADMINISTRATION;
+    }
+
+    public function getStorefrontPath(): string
+    {
+        return self::DEFAULT_PATH_STOREFRONT;
+    }
+
+    protected function getActionEvents(): array
     {
         return [];
     }
@@ -159,7 +171,6 @@ abstract class Bundle extends SymfonyBundle
     {
         $definition = $container->getDefinition(BusinessEventRegistry::class);
         $definition->addMethodCall('addMultiple', [$this->getActionEvents()]);
-        $definition->addMethodCall('addClasses', [$this->getActionEventClasses()]);
     }
 
     /**
