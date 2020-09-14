@@ -85,18 +85,27 @@ export default class SearchWidgetPlugin extends Plugin {
      * @private
      */
     _handleInputEvent() {
-        const value = this._inputField.value.trim();
+        const formData = new FormData(this.el);
+        let encodedUri = '?';
 
         // stop search if minimum input value length has not been reached
-        if (value.length < this.options.searchWidgetMinChars) {
+        if (formData.get('search').length < this.options.searchWidgetMinChars) {
             // further clear possibly existing search results
             this._clearSuggestResults();
             return;
         }
 
-        this._suggest(value);
+        for(let [fieldName, fieldValue] of formData) {
+            if(encodedUri.charAt(encodedUri.length - 1) !== '?') {
+                encodedUri += '&';
+            }
 
-        this.$emitter.publish('handleInputEvent', { value });
+            encodedUri += `${fieldName}=` + encodeURIComponent(fieldValue);
+        }
+
+        this._suggest(encodedUri);
+
+        this.$emitter.publish('handleInputEvent', { formData });
     }
 
     /**
@@ -104,14 +113,14 @@ export default class SearchWidgetPlugin extends Plugin {
      * @param {string} value
      * @private
      */
-    _suggest(value) {
-        const url = this._url + encodeURIComponent(value);
+    _suggest(encodedUri) {
+        const url = this._url + encodedUri;
 
         // init loading indicator
         const indicator = new ButtonLoadingIndicator(this._submitButton);
         indicator.create();
 
-        this.$emitter.publish('beforeSearch');
+        this.$emitter.publish('beforeSearch', { encodedUri, url });
 
         this._client.abort();
         this._client.get(url, (response) => {
